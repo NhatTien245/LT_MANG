@@ -188,3 +188,89 @@ def reset_password():
 
     return render_template('reset_password.html')
 
+
+# Danh sách các tên miền email được phép
+ALLOWED_DOMAINS = ['UTH.com', 'UTH.org', 'gmail.com']  # Lưu ý không cần '@' trong danh sách
+
+# Chức năng đăng ký
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        email = request.form['email']
+        backup_email = request.form['backup_email']
+        username = request.form['username']
+        password = request.form['password']
+
+        # Kiểm tra nếu email không có domain, tự động thêm domain mặc định
+        if '@' not in email:
+            email = f"{email}@UTH.com"  # Thêm domain mặc định
+
+        # Kiểm tra tên miền của email
+        domain = email.split('@')[-1]  # Lấy tên miền từ email
+        if domain not in ALLOWED_DOMAINS:
+            return jsonify(success=False, message="Tên miền email không hợp lệ. Vui lòng sử dụng email với tên miền hợp lệ.")
+
+        # Kiểm tra email đã được sử dụng
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            return jsonify(success=False, message="Email đã được sử dụng. Vui lòng chọn một email khác.")
+
+        # Kiểm tra tên người dùng đã được sử dụng
+        existing_username = User.query.filter_by(username=username).first()
+        if existing_username:
+            return jsonify(success=False, message="Tên người dùng đã được sử dụng. Vui lòng chọn một tên khác.")
+
+        # Băm mật khẩu và tạo người dùng
+        private_key, public_key = generate_keys()
+        pem_private, pem_public = serialize_keys(private_key, public_key)
+        private_key_pass = encrypt_with_password(password, pem_private)
+
+        hashed_password = generate_password_hash(password)
+
+        user = User(email=email, username=username, password=hashed_password, public_key=pem_public, private_key=private_key_pass ,backup_email=backup_email)
+        db.session.add(user)
+        db.session.commit()
+
+        # Đường dẫn tới file khóa riêng tư
+        private_key_dir = 'private_keys'
+        os.makedirs(private_key_dir, exist_ok=True)
+        private_key_filename = os.path.join(private_key_dir, f"private_key_{email}.pem")
+
+        # Lưu khóa riêng tư vào file
+        with open(private_key_filename, 'w') as f:
+            f.write(pem_private)
+
+        # Gửi phản hồi JSON để client hiển thị modal thành công
+        response = jsonify(success=True, message="Đăng ký thành công!")
+        response.headers['X-Private-Key-File'] = private_key_filename  # Thêm tên file vào header để client có thể tải file
+
+        return response
+
+    return render_template('index.html')
+
+
+# Chức năng đăng nhập
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        # Kiểm tra nếu email không có domain, tự động thêm domain mặc định
+        if '@' not in email:
+            email = f"{email}@UTH.com"  # Thêm domain mặc định nếu không có
+
+        # Kiểm tra email có tồn tại trong cơ sở dữ liệu
+        user = User.query.filter_by(email=email).first()
+
+        if user and check_password_hash(user.password, password):
+            # Lưu thông tin vào session khi đăng nhập thành công
+            session['user_id'] = user.id
+            session['email'] = user.email
+            session['username'] = user.username
+            session['private_key'] = decrypt_with_password(password, user.private_key)
+            session['public_key'] = user.public_key
+            return redirect(url_for('inbox'))
+
+        return jsonify(success=False, message="Email hoặc mật khẩu không đúng.")
+
