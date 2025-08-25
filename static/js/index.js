@@ -133,3 +133,42 @@ document.querySelector('.register').addEventListener('submit', function(event) {
     })
     .catch(error => console.error('Error:', error));
 });
+// Hiển thị modal lỗi khi đăng nhập
+function showErrorModalLogin(message) {
+    document.getElementById('errorMessageLogin').textContent = message;
+    document.getElementById('errorModalLogin').style.display = 'block';
+}
+
+// Đóng modal lỗi đăng nhập
+function closeErrorModalLogin() {
+    document.getElementById('errorModalLogin').style.display = 'none';
+}
+
+// Xử lý gửi form đăng nhập
+document.querySelector('.login').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+
+    fetch(this.action, {
+        method: this.method,
+        body: formData,
+    })
+    .then(response => {
+        if (response.redirected) {
+            window.location.href = response.url;  // Chuyển hướng đến URL được trả về (inbox)
+        } else {
+            return response.json();  // Nếu không chuyển hướng, trả về JSON để kiểm tra lỗi
+        }
+    })
+    .then(data => {
+        if (data && !data.success) {
+            showErrorModalLogin(data.message);  // Hiển thị modal lỗi khi có lỗi
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+// Reload lại trang index
+document.getElementById('logo').addEventListener('click', function () {
+    location.reload();
+});
