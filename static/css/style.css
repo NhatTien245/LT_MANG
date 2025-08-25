@@ -1,0 +1,311 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Times New Roman', Times, serif;
+}
+.screen-login,
+.screen-register,
+.screen-password,
+.screen-reset {
+    position: fixed;
+    height: 600px;
+    width: 400px;
+    top: 12vh;
+    left: 50%;
+    z-index: 5;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0px 0px 24px #466EB4;
+    transform: translateX(-50%) translateY(-20px) scale(0);
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+    background: linear-gradient(90deg, #DBE9F2, #BEDBED, #466EB4);
+}
+.screen-login.active,
+.screen-register.active,
+.screen-password.active,
+.screen-reset.active {
+    transform: translateX(-50%) translateY(0) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+}
+.screen-content {
+    z-index: 1;
+    position: relative;
+    height: 100%;
+}
+.login,
+.register,
+.forgot,
+.reset {
+    width: 380px;
+}
+.login,
+.forgot,
+.reset {
+    padding: 120px 30px 30px 30px;
+}
+.register {
+    padding: 90px 30px 30px 30px;
+}
+.login-field,
+.register-field,
+.forgot-field,
+.reset-field {
+    padding: 20px 0px;
+    position: relative;
+}
+.login-icon,
+.register-icon,
+.forgot-icon,
+.reset-icon {
+    position: absolute;
+    top: 30px;
+    color: #466EB4;
+}
+.login-input,
+.register-input,
+.forgot-input,
+.reset-input {
+    border: none;
+    border-bottom: 2px solid #D1D1D4;
+    background: none;
+    padding: 10px;
+    padding-left: 30px;
+    font-weight: 400;
+    width: 75%;
+    transform: .2s;
+}
+.login-input:active,
+.login-input:focus,
+.login-input:hover,
+.register-input:active,
+.register-input:focus,
+.register-input:hover,
+.forgot-input:active,
+.forgot-input:focus,
+.forgot-input:hover,
+.reset-input:active,
+.reset-input:focus,
+.reset-input:hover {
+	outline: none;
+	border-bottom-color: #466EB4;
+}
+.login-submit,
+.register-submit,
+.forgot-submit,
+.reset-submit {
+    background: #fff;
+    font-size: 14px;
+    margin-top: 30px;
+    padding: 16px 20px;
+    border-radius: 26px;
+    border: 1px solid #D4D3E8;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    width: 60%;
+    color: #466EB4;
+    cursor: pointer;
+    transition: .2s;
+}
+.register-submit {
+    width: 50%;
+}
+.login-submit:active,
+.login-submit:focus,
+.login-submit:hover,
+.register-submit:active,
+.register-submit:focus,
+.register-submit:hover,
+.forgot-submit:active,
+.forgot-submit:focus,
+.forgot-submit:hover,
+.reset-submit:active,
+.reset-submit:focus,
+.reset-submit:hover {
+	border: 2px solid #466EB4;
+	outline: none;
+    transform: scale(1.1);
+    transition: transform 0.1s ease;
+}
+.button-icon {
+	font-size: 24px;
+	margin-left: auto;
+	color: #466EB4;
+}
+.social-login {
+    position: absolute;
+    height: 140px;
+    width: 160px;
+    text-align: center;
+    bottom: 0px;
+    right: 0px;
+}
+.social-icons {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.social-login-icon {
+	padding: 10px 10px;
+	color: #fff;
+	text-decoration: none;
+	text-shadow: 0px 0px 8px #466EB4;
+    width: 30%;
+}
+.social-login-icon:hover {
+	transform: scale(1.5);
+	cursor: pointer;
+}
+.option {
+    position: absolute;
+    right: 18px;
+    bottom: 15px;
+    text-align: center;
+}
+.option a{
+    text-decoration: none;
+    color: #fff;
+    cursor: pointer;
+}
+.screen-background {
+    position: absolute;
+    top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 0;
+    -webkit-clip-path: inset(0 0 0 0);
+	clip-path: inset(0 0 0 0);
+}
+.screen-background-shape {
+	transform: rotate(45deg);
+	position: absolute;
+}
+.screen-background-shape1 {
+	height: 520px;
+	width: 620px;
+    background: linear-gradient(90deg, #DBE9F2, #BEDBED);
+	top: -50px;
+	right: 120px;
+	border-radius: 0 72px 0 0;
+}
+.screen-background-shape2 {
+	height: 220px;
+	width: 220px;
+	background: #466EB4;
+	top: -172px;
+	right: 0;
+	border-radius: 32px;
+}
+.screen-background-shape3 {
+	height: 540px;
+	width: 190px;
+	background: linear-gradient(270deg, #BEDBED, #466EB4);
+	top: -24px;
+	right: 0;
+	border-radius: 32px;
+}
+.screen-background-shape4 {
+	height: 400px;
+	width: 200px;
+	background: #466EB4;
+	top: 420px;
+	right: 50px;
+	border-radius: 60px;
+}
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+}
+.close-btn i:hover {
+    color: red;
+}
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 4;
+}
+.screen-login.active ~ .overlay,
+.screen-register.active ~ .overlay,
+.screen-password.active ~ .overlay,
+.screen-reset.active ~ .overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    width: 40%;
+    max-width: 500px;
+    text-align: center;
+    animation: fadeIn 0.3s;
+}
+/* Hiệu ứng fade-in cho modal */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.modal-content h2 {
+    color: #466EB4;
+    margin-bottom: 15px;
+}
+.modal-content p {
+    color: #333;
+    margin-bottom: 20px;
+}
+.modal-content button {
+    background-color: #466EB4;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.modal-content button:hover {
+    background-color: #BEDBED;
+}
+.title-forgot {
+    color: #fff;
+    cursor: pointer;
+    margin-left: 40px;
+}
+.title-forgot:hover {
+    color: #466EB4;
+}
