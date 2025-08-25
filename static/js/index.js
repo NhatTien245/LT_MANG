@@ -96,3 +96,40 @@ function showErrorModal(message) {
 function closeErrorModal() {
     document.getElementById('errorModal').style.display = 'none';
 }
+// Xử lý gửi form đăng ký
+document.querySelector('.register').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+
+    fetch(this.action, {
+        method: this.method,
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showSuccessModal();
+
+            // Tự động tải file khóa riêng tư
+            setTimeout(() => {
+                fetch(`/download_private_key?filename=${encodeURIComponent(data.private_key_file)}`, {
+                    method: 'GET',
+                })
+                .then(response => response.blob())
+                .then(blob => {
+                    const downloadUrl = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.download = `private_key_${formData.get('email')}.pem`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                })
+                .catch(error => console.error('Error downloading key:', error));
+            }, 2000);
+        } else {
+            showErrorModal(data.message);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
