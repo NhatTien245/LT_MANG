@@ -70,5 +70,39 @@ db.init_app(app)
 
 # Hàm tạo mã token ngẫu nhiên
 def generate_token(length=6):
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length)) # Tạo mã gồm chữ hoa và số
 
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.utils import formataddr
+from email.header import Header
+import smtplib
+
+def send_reset_email(user_email, token):
+    msg = MIMEMultipart()
+
+    # Đặt người gửi với mã hóa UTF-8
+    sender_name = Header('Tên Người Gửi', 'utf-8').encode()
+    msg['From'] = formataddr((sender_name, app.config['MAIL_USERNAME']))
+    msg['To'] = user_email
+
+    # Đặt tiêu đề với mã hóa UTF-8
+    subject = Header("Mã xác nhận khôi phục mật khẩu", 'utf-8').encode()
+    msg['Subject'] = subject
+
+    # Nội dung email (sử dụng UTF-8)
+    body = f"Mã xác nhận để khôi phục mật khẩu của bạn là: {token}"
+    msg.attach(MIMEText(body, 'plain', 'utf-8'))
+
+    # Gửi email
+    try:
+        with smtplib.SMTP(app.config['MAIL_SERVER'], app.config['MAIL_PORT']) as server:
+            server.ehlo()  # Bắt đầu giao thức giao tiếp với máy chủ
+            server.starttls()  # Bảo mật kết nối
+            server.login(app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
+
+            # Chuyển đổi `msg` thành chuỗi và đảm bảo mã hóa UTF-8
+            server.sendmail(app.config['MAIL_USERNAME'], user_email, msg.as_string().encode('utf-8'))
+            print(f"Đã gửi mã xác nhận đến {user_email}")
+    except Exception as e:
+        print(f"Lỗi khi gửi email: {e}")
