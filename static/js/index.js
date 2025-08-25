@@ -62,3 +62,37 @@ function redirectedToReset() {
     closeForgotPasswordSuccessModal();
     resetPassword();
 }
+
+
+// Hiển thị modal thành công
+function showResetPasswordSuccessModal() {
+    document.getElementById('resetPasswordSuccessModal').style.display = 'block';
+}
+
+// Đóng modal thành công
+function closeResetPasswordSuccessModal() {
+    document.getElementById('resetPasswordSuccessModal').style.display = 'none';
+    // Có thể chuyển hướng về trang đăng nhập nếu cần
+    redirectToLogin();
+}
+
+// Hiển thị modal lỗi
+function showResetPasswordErrorModal() {
+    document.getElementById('resetPasswordErrorModal').style.display = 'block';
+}
+
+// Đóng modal lỗi
+function closeResetPasswordErrorModal() {
+    document.getElementById('resetPasswordErrorModal').style.display = 'none';
+}
+
+// Hiển thị modal lỗi
+function showErrorModal(message) {
+    document.getElementById('errorMessage').textContent = message;
+    document.getElementById('errorModal').style.display = 'block';
+}
+
+// Đóng modal lỗi
+function closeErrorModal() {
+    document.getElementById('errorModal').style.display = 'none';
+}
