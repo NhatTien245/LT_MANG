@@ -382,3 +382,80 @@ def inbox():
             email.local_time = None
 
     return render_template('inbox.html', received_emails=received_emails, sent_emails=email_data, trash_emails=trash_emails)
+
+
+
+# Chức năng di chuyển email vào thùng rác
+@app.route('/move_to_trash', methods=['POST'])
+def move_to_trash():
+    if 'user_id' not in session:
+        return jsonify({"success": False, "message": "Không được xác thực!!!"})
+
+    data = request.get_json()
+    email_ids = data.get('email_ids')
+    user_id = session['user_id']
+
+    if not email_ids:
+        return jsonify({"success": False, "message": "Chưa chọn ít nhất một email!"})
+
+    try:
+        for email_id in email_ids:
+            print(f"Cố gắng tìm email có ID: {email_id}")  
+            email = EncryptedEmail.query.get(email_id)
+            
+            if not email:
+                return jsonify({"success": False, "message": f"Không tìm thấy email với ID {email_id}!"})
+
+            # Kiểm tra thư đã nhận hay đã gửi dựa trên sender_id và receiver_id
+            if email.receiver_id == user_id:
+                email.receiver_deleted = True
+            elif email.sender_id == user_id:
+                email.sender_deleted = True
+            else:
+                return jsonify({"success": False, "message": "Bạn không có quyền xóa email này"})
+            
+            db.session.commit()
+
+        return jsonify({"success": True, "message": "Đã di chuyển email vào thùng rác."})
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "message": f"Lỗi: {str(e)}"})
+
+
+# Chức năng lấy danh sách email trong thùng rác (API)
+@app.route('/get_trash_emails', methods=['GET'])
+def get_trash_emails():
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Không được xác thực!!!'})
+    
+    user_id = session['user_id']
+    trash_emails = EncryptedEmail.query.filter(
+        ((EncryptedEmail.receiver_id == user_id) & (EncryptedEmail.receiver_deleted == True)) |
+        ((EncryptedEmail.sender_id == user_id) & (EncryptedEmail.sender_deleted == True))
+    ).order_by(EncryptedEmail.timestamp.desc()).all()
+    
+    emails_data = []
+    local_tz = pytz.timezone('Asia/Ho_Chi_Minh')
+    for email in trash_emails:
+        sender = User.query.get(email.sender_id)
+        # Kiểm tra nếu email này là của người dùng hiện tại
+        sender_email = sender.email if sender else "Người gửi không xác định"
+        if email.sender_id == user_id:
+            sender_email += " | tôi"
+        
+        # Xử lý thời gian
+        if email.timestamp:
+            utc_time = email.timestamp
+            local_time = utc_time.replace(tzinfo=pytz.utc).astimezone(local_tz).strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            local_time = None
+
+        emails_data.append({
+            'id': email.id,
+            'sender_email': sender_email,
+            'subject': email.subject,
+            'local_time': local_time
+        })
+    
+    return jsonify({'success': True, 'emails': emails_data})
