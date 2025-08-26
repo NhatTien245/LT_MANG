@@ -459,3 +459,51 @@ def get_trash_emails():
         })
     
     return jsonify({'success': True, 'emails': emails_data})
+
+# Xóa email vĩnh viễn
+@app.route('/delete_emails', methods=['POST'])
+def delete_emails():
+    if 'user_id' not in session:
+        return jsonify({"success": False, "message": "Không được xác thực!!!"})
+
+    data = request.get_json()
+    email_ids = data.get('emailIds', [])
+    emails = EncryptedEmail.query.filter(EncryptedEmail.id.in_(email_ids)).all()
+
+    for email in emails:
+        # Kiểm tra xem người dùng có quyền xóa email này không
+        if (email.receiver_id == session['user_id'] and email.receiver_deleted) or \
+           (email.sender_id == session['user_id'] and email.sender_deleted):
+            db.session.delete(email)
+        else:
+            return jsonify({"success": False, "message": "Không có quyền xóa email này"})
+
+    db.session.commit()
+
+    return jsonify({"success": True, "message": "Email đã được xóa thành công."})
+
+# Xóa tất cả email trong thùng rác
+@app.route('/delete_all_trash', methods=['POST'])
+def delete_all_trash():
+    if 'user_id' not in session:
+        return jsonify({"success": False, "message": "Không được xác thực!!!"})
+
+    try:
+        # Lấy tất cả thư trong thùng rác của người dùng
+        emails_in_trash = EncryptedEmail.query.filter(
+            ((EncryptedEmail.receiver_id == session['user_id']) & (EncryptedEmail.receiver_deleted == True)) |
+            ((EncryptedEmail.sender_id == session['user_id']) & (EncryptedEmail.sender_deleted == True))
+        ).all()
+
+        # Xóa tất cả thư trong thùng rác
+        for email in emails_in_trash:
+            db.session.delete(email)
+
+        db.session.commit()
+
+        return jsonify({"success": True, "message": "Tất cả thư trong thùng rác đã được xóa thành công."})
+    
+    except Exception as e:
+        db.session.rollback()
+        
+        return jsonify({"success": False, "message": f"Lỗi khi xóa thư: {str(e)}"})
