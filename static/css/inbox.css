@@ -709,3 +709,325 @@ th {
     cursor: pointer;
     background: #DBE9F2;
 }
+.footer-create-mail button:hover,
+.footer-rep-seen button:hover,
+.footer-rep-received button:hover {
+    background: #466EB4;
+    font-size: 20px;
+    color: #fff;
+}
+.footer-create-mail i,
+.footer-rep-seen i,
+.footer-rep-received i {
+    font-size: 24px;
+    cursor: pointer;
+}
+.footer-create-mail i:hover,
+.footer-rep-seen i:hover,
+.footer-rep-received i:hover {
+    transform: scale(1.1);
+}
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    background-color: #f8f8f8;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.file-item:hover {
+    background-color: #e0e0e0;
+}
+.file-name {
+    color: #1a73e8;
+    text-decoration: underline;
+    cursor: pointer;
+    flex-grow: 1;
+}
+.file-size {
+    font-size: 12px;
+    color: #555;
+    margin-left: 10px;
+}
+.delete-button {
+    color: #ff0000;
+    cursor: pointer;
+    margin-left: 10px;
+}
+#file-dropdown-sent,
+#file-dropdown-received,
+#file-dropdown-create {
+    max-height: 125px;
+    width: calc(100% - 30px);
+    overflow: auto;
+    bottom: 52px;
+    position: absolute;
+}
+.file-dropdown {
+    width: 500px;
+    height: 30px;
+    padding-left: 10px;
+    border: 1px solid;
+    border-radius: 5px;
+    background-color: #fff;
+    appearance: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+.file-dropdown::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    border-color: #007BFF transparent transparent transparent;
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+.progress-bar {
+    width: 70px;
+    height: 10px;
+    background-color: #f0f0f0;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-left: 10px;
+    flex-grow: 1;
+}
+.progress {
+    height: 100%;
+    background-color: #1a73e8;
+    width: 0;
+    transition: width 0.5s ease;
+}
+#attachment-create,
+#attachment-received,
+#attachment-sent,
+#noDecryptedBody p,
+#noAttachmentsContent p,
+#noDecryptedBodySeen p,
+#noAttachmentsSeenContent p {
+    display: none;
+}
+
+/* ___Decode/Sent___ */
+.form-decode h1,
+.form-seen h1 {
+    text-align: center;
+    font-size: 30px;
+    font-weight: 600;
+    padding-top: 10px;
+}
+.form-decode p,
+.form-seen p {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 10px 15px;
+}
+.form-decode span,
+.form-seen span {
+    font-weight: normal;
+}
+.form-decode .error,
+.form-seen .error {
+    font-style: italic;
+    color: red;
+}
+.content {
+    margin: 0px 15px 0px 20px;
+    padding: 5px 5px;
+    font-size: 18px;
+}
+.content span {
+    font-weight: normal;
+}
+#attachmentsSeenList,
+#attachmentsList {
+    display: flex;
+}
+.line {
+    position: absolute;
+    border: 1px solid lightgray;
+    width: 200px;
+    height: 128px;
+    bottom: 21px;
+    margin-left: -1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.icon-file {
+    font-size: 60px;
+    opacity: 0.3;
+}
+.icon-small i {
+    opacity: 1;
+    font-size: 15px;
+}
+.form-file {
+    position: relative;
+    border: 1px solid lightgray;
+    margin: 138px 10px 10px 15px;
+    width: 200px;
+    height: 22px;
+    display: flex;
+    align-items: flex-end;
+}
+.form-file a {
+    display: inline-block;
+    margin-left: 5px;
+    max-width: 170px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    text-decoration: none;
+    color: black;
+}
+.corner-triangle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    transform: rotate(270deg);
+    border-left: 20px solid transparent;
+    border-top: 20px solid ;
+}
+.end-decode,
+.end-seen {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.rep-mail,
+.footer-icon {
+    margin: 10px 15px;
+}
+.rep-mail {
+    display: flex;
+    gap: 10px;
+}
+.btn-rep-email-received,
+.btn-rep-email-sent,
+.btn-forward-email-received,
+.btn-forward-email-sent,
+.footer-icon button {
+    width: auto;
+    font-size: 15px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 1px solid lightgray;
+    background: #fff;
+    cursor: pointer;
+}
+.btn-rep-email-received:hover,
+.btn-rep-email-sent:hover,
+.btn-forward-email-received:hover,
+.btn-forward-email-sent:hover,
+.footer-icon button:hover {
+    background: #BEDBED;
+    border: 1px solid #466EB4;
+}
+.btn-forward-email-received i,
+.btn-forward-email-sent i {
+    transform: scaleX(-1);
+}
+/*___Thông báo của việc gửi mail___*/
+.alert {
+    position: absolute;
+    z-index: 98;
+    right: 0px;
+    margin-top: 10px;
+    padding: 10px 15px;
+    background: #DBE9F2;
+    border: 3px solid #BEDBED;
+    border-radius: 10px;
+    width: auto;
+    opacity: 0;
+    animation: slide-in 0.5s forwards, fade-out 0.5s 4.5s forwards;
+}
+@keyframes slide-in {
+    from {
+        right: 0px;
+        opacity: 0;
+    }
+    to {
+        right: 20px;
+        opacity: 1;
+    }
+}
+@keyframes fade-out {
+    to {
+        opacity: 0;
+    }
+}
+
+/* ___Reponsive___ */
+@media (max-width: 420px) {
+    .sidebar li .tooltip{
+        display: none;
+    }
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+.modal.active {
+    display: flex;
+}
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    width: auto;
+    height: 170px;
+    max-width: 500px;
+    text-align: center;
+    animation: fadeIn 0.3s;
+}
+/* Hiệu ứng fade-in cho modal */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.modal-content h2 {
+    color: #466EB4;
+    margin-bottom: 15px;
+}
+.modal-content p {
+    color: #333;
+    margin-bottom: 20px;
+}
+.modal-content button {
+    background-color: #466EB4;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.modal-content button:hover {
+    background-color: #BEDBED;
+}
