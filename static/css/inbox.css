@@ -391,3 +391,134 @@
     padding: 15px 30px 15px 30px;
     font-size: 24px;
 }
+.info-recover-key div input {
+    width: 250px;
+    height: 40px;
+    margin-bottom: 10px;
+    border: none;
+    border-bottom: 2px solid #BEDBED;
+    background: #DBE9F2;
+}
+.info-recover-key div input:hover,
+.info-recover-key div input:focus,
+.info-recover-key div input:active {
+    outline: none;
+    border-color: #466EB4;
+}
+.button-submit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.button-submit button {
+    padding: 10px 30px;
+    margin-top: 10px;
+    background: #DBE9F2;
+    border-radius: 20px;
+    border: 1px solid #8b8b8b;
+}
+.button-submit button:hover {
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    background: #BEDBED;
+    transform: scale(1.1);
+    transition: transform 0.1s ease;
+}
+
+/* ====Content====*/
+/* ___Table___ */
+table {
+    border: 1px solid #BEDBED;
+    margin: 0px 10px 0px 10px ;
+    width: calc(100% - 20px);
+    border-collapse: collapse;
+}
+th, td {
+    border-bottom: 1px solid #BEDBED;
+    padding: 10px;
+    text-align: left;
+}
+th {
+    background-color: #DBE9F2;
+    font-size: 18px;
+}
+.col-checkbox{
+    width: 1%;
+}
+.col-trash {
+    text-align: center;
+}
+.col-trash-1,
+.col-trash-2,
+.col-trash-3 {
+    width: 33%;
+}
+.col-trash a {
+    text-decoration: none;
+}
+.col-action {
+    width: 120px;
+    text-align: center;
+}
+.email-row.unread {
+    background-color: lightgray;
+}
+.email-row.read {
+    background-color: #fff; 
+}
+.decode,
+.see {
+    text-align: center;
+}
+.decode i:hover,
+.see i:hover {
+    transform: scale(1.8);
+    transition: transform 0.1s ease;
+    color: #466EB4;
+}
+.see a {
+    cursor: pointer;
+}
+.pagination-controls {
+    margin-top: 10px;
+    left: 0px;
+    right: 0px;
+    text-align: center;
+    position: fixed;
+    bottom: 5px
+}
+.pagination-controls .page-button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: none;
+    background-color: #f5f5f5;
+    cursor: pointer;
+    border-radius: 4px;
+    outline: none;
+}
+.pagination-controls .page-button:hover {
+    background-color: #ddd;
+}
+.pagination-controls .page-button:focus {
+    outline: none;
+}
+
+/* ==== Css chung ==== */
+.form-mail-received,
+.form-mail-send,
+.form-trash-mail,
+.form-decode,
+.form-seen {
+    position: absolute;
+    background: #fff;
+    margin-left: 10px;
+    width: calc(100% - 20px);
+    height: 90vh;
+    top: 10vh;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
