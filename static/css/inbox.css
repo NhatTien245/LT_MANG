@@ -522,3 +522,100 @@ th {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
 }
+.form-mail-received {
+    z-index: 90;
+}
+.form-mail-send {
+    z-index: 91;
+}
+.form-trash-mail {
+    z-index: 92;
+}
+.form-decode,
+.form-seen {
+    z-index: 96;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    overflow: auto; 
+}
+.form-account.active,
+.recover-key:active ~ .form-recover-key,
+.form-create-mail.active,
+.form-mail-received.active,
+.form-mail-send.active,
+.form-trash-mail.active,
+.form-decode.active,
+.form-seen.active,
+.form-rep-sent.active,
+.form-rep-received.active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+.head-received,
+.head-send,
+.head-trash {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 10px 10px 50px;
+}
+.mail-received,
+.mail-send,
+.mail-trash {
+    font-size: 30px;
+    font-weight: 600;
+}
+.head-icon {
+    display: flex;
+    gap: 10px;
+}
+.head-icon i {
+    height: 40px;
+    min-width: 40px;
+    font-size: 22px;
+    line-height: 40px;
+    cursor: pointer;
+}
+.head-icon #delete-icon-1,
+.head-icon #delete-icon-2,
+.head-icon #delete-icon-3 {
+    display: none;
+    text-align: center;
+    cursor: pointer;
+}
+.head-icon #delete-icon-1:hover,
+.head-icon #delete-icon-2:hover,
+.head-icon #delete-icon-3:hover {
+    background: red;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 24px;
+}
+
+/* ___Form Create maill/Form Rep/Form Forward___ */
+.form-create-mail,
+.form-rep-sent,
+.form-rep-received {
+    position: absolute;
+    background: #fff;
+    right: 70px;
+    height: 80vh;
+    z-index: 97;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0);
+    transition: all 0.3s;
+    border: 2px solid #BEDBED;
+    transform-origin: 93% bottom;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0px 16px 20px 0px rgba(0, 0, 0, 0.5);
+}
+.form-create-mail {
+    width: 40%;
+    bottom: 0;
+}
+.form-rep-sent,
+.form-rep-received {
+    width: 50%;
+}
