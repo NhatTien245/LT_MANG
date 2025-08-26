@@ -274,3 +274,111 @@ def login():
 
         return jsonify(success=False, message="Email hoặc mật khẩu không đúng.")
 
+# Chức năng đăng xuất
+@app.route('/inbox', methods=['GET'])
+def inbox():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    search_query = request.args.get('search', '')
+    local_tz = pytz.timezone('Asia/Ho_Chi_Minh')
+
+    # Lấy danh sách email nhận (không phải đã xóa)
+    received_emails = EncryptedEmail.query.filter_by(receiver_id=session['user_id'], receiver_deleted=False)
+
+    if search_query:
+        received_emails = received_emails.filter(
+            (User.email.ilike(f'%{search_query}%')) |
+            (EncryptedEmail.subject.ilike(f'%{search_query}%'))
+        ).join(User, User.id == EncryptedEmail.sender_id)
+
+    received_emails = received_emails.order_by(EncryptedEmail.timestamp.desc()).all()
+
+    # Lấy danh sách email đã gửi và sắp xếp theo thời gian giảm dần
+    sent_emails = (
+        db.session.query(
+            EncryptedEmail.id,
+            EncryptedEmail.subject,
+            EncryptedEmail.timestamp,
+            User.email.label('receiver_email'),
+            EncryptedEmail.sender_deleted
+        )
+        .join(User, User.id == EncryptedEmail.receiver_id)
+        .filter(EncryptedEmail.sender_id == session['user_id'], EncryptedEmail.sender_deleted == False)
+        .order_by(EncryptedEmail.timestamp.desc()) 
+        .all()
+    )
+
+    # Chuyển đổi thời gian và chuẩn bị dữ liệu cho danh sách email đã gửi
+    email_data = []
+    for email in sent_emails:
+        local_time = email.timestamp.replace(tzinfo=pytz.utc).astimezone(local_tz)
+        email_data.append({
+            'id': email.id,
+            'receiver_email': email.receiver_email,
+            'subject': email.subject,
+            'local_time': local_time.strftime('%Y-%m-%d %H:%M:%S')
+        })
+
+    for email in received_emails:
+        sender = db.session.get(User, email.sender_id)
+        keyaes_email_id = ConnectAES.query.filter_by(id_body=email.id).first()
+        keyaes_email_sender = db.session.get(EncryptForward, keyaes_email_id.id_aes)
+
+        email.sender_email = sender.email if sender else "Người gửi không xác định"
+
+        # Giải mã nội dung email
+        decrypted_body = None
+        if email.timestamp:
+            utc_time = email.timestamp
+            email.local_time = utc_time.replace(tzinfo=pytz.utc).astimezone(local_tz)
+        else:
+            email.local_time = None
+
+        try:
+            private_key = session.get('private_key')
+            if private_key:
+
+                #kiểm tra id nào để giải mã đúng khóa
+                decrypted_aes_key = None
+                if keyaes_email_sender.receiver_id == session['user_id']:
+                    decrypted_aes_key = rsa_decrypt(keyaes_email_sender.key_receiver, private_key)
+                else :
+                    decrypted_aes_key = rsa_decrypt(keyaes_email_sender.key_sender, private_key)
+
+                decrypted_aes_key_bytes = bytes.fromhex(decrypted_aes_key)
+                decrypted_body_bytes = aes_decrypt(bytes.fromhex(email.body), decrypted_aes_key_bytes)
+                decrypted_body = decrypted_body_bytes.decode('utf-8')
+
+                # Loại bỏ các thẻ HTML khỏi nội dung đã giải mã
+                soup = BeautifulSoup(decrypted_body, 'html.parser')
+                decrypted_body = soup.get_text(separator=' ')
+                
+                # Chỉ giữ nội dung trước "----Forwarded message----" 
+                if "----Forwarded message----" in decrypted_body: 
+                    decrypted_body = decrypted_body.split("----Forwarded message----")[0]
+                
+            email.decrypted_body = decrypted_body
+        except Exception as e:
+            email.decrypted_body = "Giải mã thất bại."
+
+        # Chuyển đổi thời gian cho email đã gửi
+
+    # Lấy danh sách email trong thùng rác
+
+    trash_emails = EncryptedEmail.query.filter(
+        ((EncryptedEmail.receiver_id == session['user_id']) & (EncryptedEmail.receiver_deleted == True)) |
+        ((EncryptedEmail.sender_id == session['user_id']) & (EncryptedEmail.sender_deleted == True))
+    ).order_by(EncryptedEmail.timestamp.desc()).all()
+
+    for email in trash_emails:
+        sender = User.query.get(email.sender_id)
+        email.sender_email = sender.email if sender else "Người gửi không xác định"
+        
+        if email.timestamp:
+            utc_time = email.timestamp
+            email.local_time = utc_time.replace(tzinfo=pytz.utc).astimezone(local_tz)
+        else:
+            email.local_time = None
+
+    return render_template('inbox.html', received_emails=received_emails, sent_emails=email_data, trash_emails=trash_emails)
